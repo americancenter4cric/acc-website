@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Gallery — American Center for Cricket</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+  <header class="bg-white shadow">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <img src="assets/logo.svg" alt="ACC logo" class="h-10 w-10 rounded-md object-cover"/>
+        <div class="leading-tight">
+          <div class="text-lg font-bold">American Center for Cricket</div>
+        </div>
+      </a>
+      <nav class="hidden md:flex gap-3 items-center">
+        <a href="index.html" class="px-3 py-2 rounded-md hover:bg-gray-100">Home</a>
+        <a href="index.html#programs" class="px-3 py-2 rounded-md hover:bg-gray-100">Programs</a>
+        <a href="index.html#coaches" class="px-3 py-2 rounded-md hover:bg-gray-100">Coaches</a>
+        <a href="index.html#contact" class="px-3 py-2 rounded-md bg-teal-600 text-white">Enroll</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-6 py-12">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-extrabold">Photos & Training Videos</h1>
+      <p class="mt-2 text-gray-600">Browse photos of our kids, coaches, and watch training videos.</p>
+    </div>
+
+    <div class="flex justify-center gap-3 mb-6">
+      <button class="filterBtn px-4 py-2 rounded-md bg-teal-600 text-white" data-filter="all">All</button>
+      <button class="filterBtn px-4 py-2 rounded-md bg-gray-200" data-filter="kids">Kids</button>
+      <button class="filterBtn px-4 py-2 rounded-md bg-gray-200" data-filter="coaches">Coaches</button>
+      <button class="filterBtn px-4 py-2 rounded-md bg-gray-200" data-filter="videos">Videos</button>
+    </div>
+
+    <!-- Gallery grid -->
+    <div id="galleryGrid" class="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
+      <!-- Image examples: put your images at assets/kids/ or assets/coaches/ -->
+      <button class="gallery-item" data-type="img" data-src="assets/kids/cta1.jpg" data-caption="Kids 1">
+        <img src="assets/kids/cta1.jpg" alt="kids1" class="w-full h-40 object-cover rounded-md shadow-sm" loading="lazy"/>
+      </button>
+
+      <button class="gallery-item" data-type="img" data-src="assets/kids/cta2.jpg" data-caption="Kids 2">
+        <img src="assets/kids/cta2.jpg" alt="kids2" class="w-full h-40 object-cover rounded-md shadow-sm" loading="lazy"/>
+      </button>
+
+      <button class="gallery-item" data-type="img" data-src="assets/coaches/raju.jpg" data-caption="Coach Raju">
+        <img src="assets/coaches/raju.jpg" alt="coachRaju" class="w-full h-40 object-cover rounded-md shadow-sm" loading="lazy"/>
+      </button>
+
+      <!-- Video thumbnails: data-type="video". For YouTube set data-src to the full embed URL or the youtube watch URL (handled below). -->
+        <!--
+          <button class="gallery-item" data-type="video" data-src="https://www.youtube.com/watch?v=dQw4w9WgXcQ" data-caption="Training Drills">
+            <img src="assets/videos/thumb-training1.jpg" alt="training video" class="w-full h-40 object-cover rounded-md shadow-sm" loading="lazy"/>
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <svg class="w-12 h-12 text-white opacity-90" viewBox="0 0 24 24" fill="none"><path d="M5 3v18l15-9L5 3z" fill="currentColor"/></svg>
+            </div>
+          </button>
+        -->
+      <!-- Add more items similarly... -->
+    </div>
+  </main>
+
+  <!-- Lightbox / modal -->
+  <div id="lightbox" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 p-4">
+    <div id="lightboxContent" class="max-w-4xl w-full bg-white rounded-md overflow-hidden shadow-lg">
+      <div class="flex justify-between items-center px-4 py-2 border-b">
+        <div id="lightboxCaption" class="font-semibold"></div>
+        <button id="lightboxClose" class="px-2 py-1 rounded-md bg-gray-100 hover:bg-gray-200">Close</button>
+      </div>
+      <div id="lightboxBody" class="p-4 bg-black/80 flex items-center justify-center" style="min-height:340px;"></div>
+    </div>
+  </div>
+
+  <script>
+    // basic filtering
+    const filterBtns = document.querySelectorAll('.filterBtn');
+    filterBtns.forEach(btn => btn.addEventListener('click', () => {
+      filterBtns.forEach(b=>b.classList.remove('bg-teal-600', 'text-white'));
+      btn.classList.add('bg-teal-600', 'text-white');
+      const filter = btn.dataset.filter;
+      document.querySelectorAll('#galleryGrid .gallery-item').forEach(item => {
+        const src = item.dataset.src || '';
+        if (filter === 'all') {
+          item.style.display = '';
+        } else if (filter === 'videos') {
+          item.style.display = item.dataset.type === 'video' ? '' : 'none';
+        } else {
+          // kids or coaches
+          const path = (item.dataset.src || '').toLowerCase();
+          item.style.display = path.includes(filter) && item.dataset.type === 'img' ? '' : 'none';
+        }
+      });
+    }));
+
+    // lightbox
+    const lightbox = document.getElementById('lightbox');
+    const lightboxBody = document.getElementById('lightboxBody');
+    const lightboxCaption = document.getElementById('lightboxCaption');
+    const lightboxClose = document.getElementById('lightboxClose');
+
+    function openLightbox(type, src, caption) {
+      lightboxCaption.textContent = caption || '';
+      lightboxBody.innerHTML = '';
+      if (type === 'img') {
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = caption || '';
+        img.className = 'max-w-full max-h-[70vh] object-contain';
+        lightboxBody.appendChild(img);
+      } else if (type === 'video') {
+        // support local mp4 or youtube links
+        if (src.includes('youtube.com') || src.includes('youtu.be')) {
+          // convert watch?v= to embed
+          let embed = src;
+          if (src.includes('watch?v=')) {
+            embed = src.replace('watch?v=', 'embed/');
+          } else if (src.includes('youtu.be/')) {
+            const id = src.split('/').pop();
+            embed = 'https://www.youtube.com/embed/' + id;
+          }
+          const iframe = document.createElement('iframe');
+          iframe.src = embed + '?rel=0&autoplay=1';
+          iframe.width = '100%';
+          iframe.height = '480';
+          iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+          iframe.allowFullscreen = true;
+          lightboxBody.appendChild(iframe);
+        } else {
+          const video = document.createElement('video');
+          video.src = src;
+          video.controls = true;
+          video.autoplay = true;
+          video.className = 'max-w-full max-h-[70vh]';
+          lightboxBody.appendChild(video);
+        }
+      }
+      lightbox.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    document.querySelectorAll('.gallery-item').forEach(el => {
+      el.addEventListener('click', () => {
+        const type = el.dataset.type;
+        const src = el.dataset.src;
+        const cap = el.dataset.caption;
+        openLightbox(type, src, cap);
+      });
+    });
+
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+    function closeLightbox() {
+      lightbox.classList.add('hidden');
+      lightboxBody.innerHTML = '';
+      document.body.style.overflow = '';
+    }
+  </script>
+
+  <footer class="mt-12 py-8 text-center text-gray-600">
+    &copy; <span id="year">2025</span> American Center For Cricket
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
