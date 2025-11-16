@@ -69,21 +69,25 @@
     50% { opacity: 0.4; }
   }
 
-  .glass-btn {
-    background: rgba(0, 180, 180, 0.35); /* transparent teal */
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(6px);
-    padding: 10px 20px;
-    border-radius: 9999px; /* pill shape */
-    transition: 0.3s ease;
-    box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
+  .acc-btn {
+    background: red;                         /* red background */
+    border: 3px solid yellow;                /* yellow border */
+    padding: 14px 28px;                      /* bigger size */
+    border-radius: 9999px;                   /* pill/round shape */
+    font-size: 1.1rem;                       /* bigger text */
+    font-weight: 600;
+    color: white;
+    box-shadow: 0 0 12px rgba(255, 255, 0, 0.4); /* yellow glow */
+    transition: 0.25s ease;
   }
 
-  .glass-btn:hover {
-    background: rgba(0, 180, 180, 0.55);
-    box-shadow: 0 0 18px rgba(0, 255, 255, 0.6);
+  .acc-btn:hover {
+    background: #cc0000;                     /* darker red on hover */
+    box-shadow: 0 0 18px rgba(255, 255, 0, 0.7);
+    transform: scale(1.05);                  /* small zoom */
   }
 </style>
+
 
 
   </header>
